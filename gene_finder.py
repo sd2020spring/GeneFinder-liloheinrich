@@ -132,8 +132,8 @@ def find_all_ORFs(dna):
     pass
 
 def find_all_ORFs_both_strands(dna):
-    """ Finds all non-nested open reading frames in the given DNA sequence on both
-        strands.
+    """ Finds all non-nested open reading frames in the given DNA sequence on
+        both strands.
 
         dna: a DNA sequence
         returns: a list of non-nested ORFs
@@ -148,8 +148,8 @@ def find_all_ORFs_both_strands(dna):
     pass
 
 def longest_ORF(dna):
-    """ Finds the longest ORF on both strands of the specified DNA and returns it
-        as a string
+    """ Finds the longest ORF on both strands of the specified DNA and returns
+        it as a string
     >>> longest_ORF("ATGCGAATGTAGCATCAAA")
     'ATGCTACATTCGCAT'
     """
@@ -192,18 +192,33 @@ def coding_strand_to_AA(dna):
         >>> coding_strand_to_AA("ATGCCCGCTTT")
         'MPA'
     """
-    # TODO: implement this
+
+    protein = ''
+    for n in range(len(dna)//3): # go through each codon
+        protein += aa_table[dna[3*n:3*(n+1)]]
+    return protein
     pass
 
 def gene_finder(dna):
-    """ Returns the amino acid sequences that are likely coded by the specified dna
+    """ Returns amino acid sequences that are likely coded by the specified dna
 
         dna: a DNA sequence
         returns: a list of all amino acid sequences coded by the sequence dna.
+    >>> gene_finder(load_seq("./data/X73525.fa"))
+    ' '
     """
-    # TODO: implement this
+
+    threshold = longest_ORF_noncoding(dna, 1500)
+    orfs = find_all_ORFs_both_strands(dna)
+    proteins = []
+    for orf in orfs:
+        if len(orf) <= threshold:
+            proteins.append(coding_strand_to_AA(orf))
+    return proteins
     pass
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+
+    # dna = load_seq("./data/X73525.fa")
