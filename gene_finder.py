@@ -94,6 +94,10 @@ def find_all_ORFs_oneframe(dna):
         returns: a list of non-nested ORFs
     >>> find_all_ORFs_oneframe("ATGCATGAATGTAGATAGATGTGCCC")
     ['ATGCATGAATGTAGA', 'ATGTGCCC']
+    >>> find_all_ORFs_oneframe("ATGCGAATGTAGCATCAAA")
+    ['ATGCGAATG']
+    >>> find_all_ORFs_oneframe("ATGCGAATGCGCTAG")
+    ['ATGCGAATGCGC']
     """
 
     orfs = []
@@ -119,15 +123,30 @@ def find_all_ORFs(dna):
 
     >>> find_all_ORFs("ATGCATGAATGTAG")
     ['ATGCATGAATGTAG', 'ATGAATGTAG', 'ATG']
+    >>> find_all_ORFs("ATGCGAATGTAGCATCAAA")
+    ['ATGCGAATG']
+    >>> find_all_ORFs("ATGCGATGCCCTAGCTAG")
+    ['ATGCGATGCCCTAGC']
     """
 
     orfs = []
     start_codon = 'ATG'
+    end_codons = ['TAG', 'TGA', 'TAA']
+    end = 0
     for n in range(len(dna)): # go through each letter
         i = dna.find(start_codon,n,n+3)
         if i != -1:
             for orf in find_all_ORFs_oneframe(dna[i:]):
-                orfs.append(orf)
+                orf_end = len(orf) + i - (len(orf)%3)
+                codon_end = dna[orf_end:orf_end+3] in end_codons and orf_end > end-3
+
+                if codon_end:
+                    end = orf_end + 3
+                elif orf_end > end:
+                    end = orf_end
+
+                if orf_end >= end or codon_end:
+                    orfs.append(orf)
     return orfs
     pass
 
@@ -204,8 +223,8 @@ def gene_finder(dna):
 
         dna: a DNA sequence
         returns: a list of all amino acid sequences coded by the sequence dna.
-    >>> gene_finder(load_seq("./data/X73525.fa"))
-    ' '
+    # >>> gene_finder(load_seq("./data/X73525.fa"))
+    # ' '
     """
 
     threshold = longest_ORF_noncoding(dna, 1500)
