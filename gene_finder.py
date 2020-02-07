@@ -98,6 +98,8 @@ def find_all_ORFs_oneframe(dna):
     ['ATGCGAATG']
     >>> find_all_ORFs_oneframe("ATGCGAATGCGCTAG")
     ['ATGCGAATGCGC']
+    >>> find_all_ORFs_oneframe("ATGCATGTAGAATGCGATAACGCATAGCC")
+    ['ATGCATGTAGAATGCGATAACGCA']
     """
 
     orfs = []
@@ -223,10 +225,11 @@ def gene_finder(dna):
 
         dna: a DNA sequence
         returns: a list of all amino acid sequences coded by the sequence dna.
-    # >>> gene_finder(load_seq("./data/X73525.fa"))
-    # ' '
+    >>> gene_finder(load_seq("./data/X73525.fa"))
+    ' '
     """
 
+    dna = dna.upper()
     threshold = longest_ORF_noncoding(dna, 1500)
     orfs = find_all_ORFs_both_strands(dna)
     proteins = []
