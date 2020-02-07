@@ -225,8 +225,8 @@ def gene_finder(dna):
 
         dna: a DNA sequence
         returns: a list of all amino acid sequences coded by the sequence dna.
-    >>> gene_finder(load_seq("./data/X73525.fa"))
-    ' '
+    # >>> gene_finder(load_seq("./data/X73525.fa"))
+    # ' '
     """
 
     dna = dna.upper()
@@ -234,7 +234,7 @@ def gene_finder(dna):
     orfs = find_all_ORFs_both_strands(dna)
     proteins = []
     for orf in orfs:
-        if len(orf) <= threshold:
+        if len(orf) > threshold:
             proteins.append(coding_strand_to_AA(orf))
     return proteins
     pass
@@ -242,5 +242,3 @@ def gene_finder(dna):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-
-    # dna = load_seq("./data/X73525.fa")
